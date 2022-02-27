@@ -135,7 +135,7 @@ There's a restriction to the \verb+ProjectCharter+ class in that only objects in
 
 
 \subsubsection{The Stakeholder class}
-This class provides a template for modelling stakeholder objects. Its methods, properties amd signatures are below in a simplified interface without the implementation.
+This class provides a template for modelling stakeholder objects. Its methods, properties amd signatures are below in a simplified interface.
 
 \begin{lstlisting}
   class Stakeholder(first_name, last_name, email):
@@ -148,13 +148,17 @@ This class provides a template for modelling stakeholder objects. Its methods, p
       property projects_involved: List[Project]
       property responsibility: str
       property role
-      property: stakeholder_title
-      property: stakeholder_type
+      property stakeholder_title
+      property stakeholder_type
 \end{lstlisting}
 
-For the role of the various stakeholders, a simple enum following the RACI responsibility models is defined.
-
 The method \verb+add_to_involved_projects+ is designed to be used only by the \linebreak \verb+__finalize_add_stakeholder()+ private method defined in the \verb+ProjectCharter+ class. It is simply used to add new \verb+ProjectCharter+ instances to the list of projects the stakeholder in question is involved with.
+
+\verb+get_number_of_projects()+ simply returns an integer depicting the number of projects that stakeholder instance is involved with at any point in time.
+
+The property \verb+projects_involved+ returns a list of objects of the \verb+ProjectCharter+ charter class readily available should the library consumer require it.
+
+For the \verb+role+ property of the various stakeholders, a simple enum following the RACI responsibility models is defined.
 
 \begin{lstlisting}
   class RoleEnum(Enum):
@@ -174,9 +178,28 @@ The method \verb+add_to_involved_projects+ is designed to be used only by the \l
 
 
 \subsubsection{The Deliverable class}
+Deliverables are very important to the success of any project and this library provides an implementation of a deliverable model. The methods and properties it provides are showcased in the simple interface below
+
+\begin{lstlisting}
+  class Deliverable(doc_title):
+      # methods
+      method mark_as_accepted(self)
+      method mark_as_rejected(self)
+      method set_reviewer(self, value)
+
+      # properties
+      property accepted: bool
+      property reviewer
+      property acceptance_criteria
+      property description
+      property expected_result
+\end{lstlisting}
+
+The \verb+mark_as_accepted+ and \verb+mark_as_rejected+ methods serve to set the \verb+accepted+ property to \verb+True+ or \verb+False+ depending on whether the deliverable has been accepted or not. \verb+set_reviewer+ sets the \verb+reviewer+ property to the "responsible" who is accountable for the deliverable. \verb+acceptance_criteria+ property serves to define what determines when a deliverable can be accepted or not.
 
 
 \subsubsection{The ProjectGovernance class}
+
 
 
 \subsubsection{The Risk class}
