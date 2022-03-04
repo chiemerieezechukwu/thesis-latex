@@ -83,7 +83,7 @@ In this section, the implementation of the library is showcased and explained. T
   \item \verb +Project+ class
 \end{itemize}
 
-\subsubsection{The ProjectCharter class}
+\subsection{The ProjectCharter class}
 A project charter is a formal, typically short document that describes your project in its entirety — including what the objectives are, how it will be carried out, and who the stakeholders are. It is a crucial ingredient in planning the project because it is used throughout the project lifecycle \cite{wrike}.
 
 The \verb+ProjectCharter+ class presents a few methods and properties.
@@ -134,8 +134,8 @@ There's a restriction to the \verb+ProjectCharter+ class in that only objects in
 \end{lstlisting}
 
 
-\subsubsection{The Stakeholder class}
-This class provides a template for modelling stakeholder objects. Its methods, properties amd signatures are below in a simplified interface.
+\subsection{The Stakeholder class}
+This class provides a template for modelling stakeholder objects. Its methods, properties and signatures are below in a simplified interface.
 
 \begin{lstlisting}
   class Stakeholder(first_name, last_name, email):
@@ -177,7 +177,7 @@ For the \verb+role+ property of the various stakeholders, a simple enum followin
 \end{lstlisting}
 
 
-\subsubsection{The Deliverable class}
+\subsection{The Deliverable class}
 Deliverables are very important to the success of any project and this library provides an implementation of a deliverable model. The methods and properties it provides are showcased in the simple interface below
 
 \begin{lstlisting}
@@ -198,17 +198,212 @@ Deliverables are very important to the success of any project and this library p
 The \verb+mark_as_accepted+ and \verb+mark_as_rejected+ methods serve to set the \verb+accepted+ property to \verb+True+ or \verb+False+ depending on whether the deliverable has been accepted or not. \verb+set_reviewer+ sets the \verb+reviewer+ property to the "responsible" who is accountable for the deliverable. \verb+acceptance_criteria+ property serves to define what determines when a deliverable can be accepted or not.
 
 
-\subsubsection{The ProjectGovernance class}
+\subsection{The ProjectGovernance class}
+Project Governance is the set of rules, procedures and policies that determine how projects are managed and overseen.
+
+These rules and procedures define how decisions are made during projects. As part of the oversight process, project governance also determines the metrics by which project success is measured.
+
+The methods and properties this class implements are in the simplified interface below.
+
+\begin{lstlisting}
+  class ProjectGovernance(project):
+      # methods
+      method get_all_stakeholders(self) -> list
+      method sign_agreement(self, signee: Stakeholder)
+
+      # properties
+      property not_signed_by: list
+      property signed_by: list
+      property signed_by_all: bool
+\end{lstlisting}
+
+The \verb+get_all_stakeholders+ method simply returns a list of stakeholder objects included in the current project governance object.
+
+\verb+sign_agreement+ simply exposes a method used to sign the project governance by the stakeholder object passed in the argument.
+
+There are a few properties in this class as well. \verb+not_signed_by+ returns a list of stakeholder objects included in the project governance object but has yet to consent the terms that will govern the project execution. \verb+signed_by+ also returns a list of stakeholder objects and is the exact opposite of the former.
+\verb+signed_by_all+ is a boolean type that simple returns \verb+True+ if all the involved stakeholders have signed and \verb+False+ otherwise.
 
 
+\subsection{The Risk class}
+Risk is any unexpected event that can affect your project — for better or for worse \cite{wrike-2}. People, processes, technology, and resources can all be impacted by risk. Risks are not the same as issues, which is a crucial distinction to recognize. Issues are something you know you'll have to deal with and may even know when they'll happen, such as a planned vacation for a team member or a large rise in product demand during the holidays. Risks are occurrences that can happen at any time and that you may not be able to predict — for example, a sudden outbreak of flu in your office or a critical product component being out of stock.
 
-\subsubsection{The Risk class}
+The \verb+Risk+ class for this library has an interface as showcased below
+
+\begin{lstlisting}
+  class Risk(risk_name, probability, impact)
+      # methods
+      method assign_risk_owner(self, value)
+      method get_risk_score(self)
+      method set_counter_measure(self, counter_measure)
+
+      # properties
+      property counter_measure
+      property description
+      property impact
+      property probability
+      property risk_owner
+\end{lstlisting}
+
+\verb+assign_risk_owner+ is simply the method for assigning the risk owner. \linebreak \verb+get_risk_score+ is a value calculated based on the \verb+probability+ and \verb+impact+ \linebreak properties. An Enum class \verb+RiskScore+ is defined to organize the various risk score points and is the return type of the method \verb+get_risk_score+.
+
+\begin{lstlisting}
+  class RiskScore(Enum):
+      VERY_HIGH = range(80, 101)  # 80% - 100%
+      HIGH = range(50, 80)  # 50% - 79%
+      MODERATE = range(30, 50)  # 30% - 49%
+      LOW = range(0, 30)  # 0 - 29%
+
+      @classmethod
+      def get_risk_score(cls, value):
+          for val in cls:
+              if value in val.value:
+                  return val
+\end{lstlisting}
+
+The \verb+set_counter_measure+ method is responsible for setting the counter measure to be adopted for mitigating the particular risk object in question.
+
+There are a possible of allowed values for the return value of the \verb+set_counter_measure+ method. It is defined in the \verb+RiskCounterMeasure+ Enum class
+
+\begin{lstlisting}
+  class RiskCounterMeasure(Enum):
+      REDUCE = "REDUCE"
+      PREVENT = "PREVENT"
+      ACCEPT = "ACCEPT"
+      TRANSFER = "TRANSFER"
+
+      @classmethod
+      def list_allowed_values(cls):
+          return list(map(lambda c: c.value, cls))
+\end{lstlisting}
 
 
-\subsubsection{The WBSItem class}
+\subsection{The WBS class}
+The \ac{wbs} class provides an interface for organizing objects from the \verb+WBSItem+ class. The \verb+WBSItem+ class's properties are displayed below
+
+\begin{lstlisting}
+  class WBSItem(work_item_name, duration, lag):
+      # properties
+      property duration
+      property lag
+      property objective
+      property percent_complete
+      property resource
+      property status
+\end{lstlisting}
+
+Several \verb+WBSItem+ objects are aggregated under a list type property to make up part of the \verb+WBS+ class.
+
+Here is a look at the \verb+WBS+ class simplified interface
+
+\begin{lstlisting}
+  class WBS(name, start_date):
+      # methods
+      method add_wbs_item(self, *args: WBSItem)
+      method get_critical_path(self)
+      method link_nodes(self, *args: Tuple[WBSItem, WBSItem])
+      method update_all(self)
+
+      # properties
+      property duration
+      property finish_date
+      property percent_complete
+      property start_date
+      property wbs_items: List[WBSItem]
+\end{lstlisting}
+
+The method \verb+add_wbs_item+ takes as many arguments as are passed to it which themselves must be objects made from the \verb+WBSItem+'s class. The method adds the individual \verb+WBSItem+ objects to the \verb+WBS+ object into the property \verb+wbs_items+
+
+It is important to mention that the \verb+WBS+ class makes use of an external python package (library), \verb+criticalpath+ \cite{criticalpath}. It uses the CPM method to calculate the critical path of a network of tasks, assuming the graph in question is acyclic (i.e. has no closed loops)
+
+The method \verb+get_critical_path+ calculates the critical path of the graph utilizing the \verb+criticalpath+ package. The method returns a visual string representation of the critical path of the graph in question.
+
+\verb+link_nodes+ takes as many tuple type arguments of \verb+WBSItem+ objects to link to one another
+
+An example usage from a test case is shown below. \linebreak
+
+\begin{lstlisting}
+  def test_WBS_link_nodes(wbs: WBS, wbs_item_factory):
+
+      ...
+
+      node_pairs = (
+          (node1, node2),
+          (node2, node3),
+          (node3, node6),
+          (node6, node7),
+          (node2, node4),
+          (node4, node6),
+          (node2, node5),
+          (node4, node5),
+          (node5, node7),
+      )
+      wbs.link_nodes(*node_pairs)
+      wbs.duration.days  # 29
+      wbs.get_critical_path() # "node1 -> node2 -> node4 -> node6 -> node7"
+\end{lstlisting}
+
+The graph that produced the \verb+node_pairs+ in the example above will look like in the image in \autoref{node pairs}.
+
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=130mm]{activity_graph.png}
+  \caption{Sample activity node diagram}
+  \label{node pairs}
+\end{figure}
+
+Each node pair has to be represented in order to ensure accurate results when accessing the \verb+.duration.days+ property or even while calling the \linebreak\verb+.get_critical_path()+. Repitions are ignored. For \autoref{node pairs}, the relevant node pairs are 
+
+\begin{itemize}
+  \item node1, node2
+  \item node2, node3
+  \item node3, node6
+  \item node6, node7
+  \item node2, node4
+  \item node4, node6
+  \item node2, node5
+  \item node4, node5
+  \item node5, node7
+\end{itemize}
 
 
-\subsubsection{The WBS class}
+\subsection{The Project class}
+The project class serves as a demonstration as to how the other class objects can be managed under a common umbrella. It provides an interface for interacting with other objects and performing operations on them.
+
+\begin{lstlisting}
+  class Project(project_charter):
+      # methods
+      method create_deliverable(self, deliverable_name)
+      method add_deliverable(self, deliverable: Deliverable)
+      method accept_deliverable(self, deliverable: Deliverable)
+      method reject_deliverable(self, deliverable: Deliverable)
+      method add_new_project_risk(self, risk)
+
+      # properties
+      property deliverables
+      property project_risks
+      property project_charter
+      property stakeholders
+      property project_governance
+\end{lstlisting}
+
+\verb+.create_deliverable()+ method take an argument, \verb+deliverable_name+ and returns an object of type \verb+Deliverable+. It also calls the method \verb+.add_deliverable()+ with the newly created \verb+Deliverable+ object as the only argument.
+
+\verb+.accept_deliverable()+ and \verb+.reject_deliverable()+ are light wrappers around the Deliverable objects and serve to mark the deliverable objects as accepted or rejected using the methods \verb+.mark_as_accepted()+ and \verb+.mark_as_rejected()+ which the deliverable objects provides themselves.
+
+\begin{lstlisting}
+  class Project:
+
+      ...
+
+      def accept_deliverable(self, deliverable: Deliverable):
+          assert deliverable in self._deliverables, "Deliverable does not exist within the current project"
+          deliverable.mark_as_accepted()
+
+      def reject_deliverable(self, deliverable: Deliverable):
+          assert deliverable in self._deliverables, "Deliverable does not exist within the current project"
+          deliverable.mark_as_rejected()
+\end{lstlisting}
 
 
-\subsubsection{The Project class}
+\section{Testing}
