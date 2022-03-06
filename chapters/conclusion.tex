@@ -1,0 +1,11 @@
+\section{Outcomes}The thesis's outcome is stated in light of the thesis's goal and scope, which were established at the beginning.
+
+The main purpose of this thesis was to develop a project management library. It was designed to provide the basic functionality that will be needed when developing a thesis management web application but can be also be adapted for other purposes. Extensive unit tests have also been written to ensure that when future functionalities are implemented, old ones don't break. These tests have been configured to run automatedly in Github hosted linux runners. The result of this test is attached to a badge on the README.md on the repository to give library users a quick insight about the health of the source code.
+
+
+\section{Future Improvements}
+\begin{itemize}
+  \item Right now, it's just a library and haven't been used in any MVP yet. Utilizing and integrating this library in real world applications will lead to improvement as some bugs that might have slipped through the unit testing procedure might eventually be discovered and fixed.
+  \item Integrate a static tool checker like mypy. Python is a dynamically typed language meaning that variables that point to objects can be assigned different data types during their lifetime. Integrating mypy will reduce errors stemming from wrong data type assignment.
+  \item Loosely couple modules to promote independent use. Some modules require other modules. For instance, the \verb+governance+ module requires a \verb+Stakeholder+ object from the \verb+project_stakeholder+ module. This creates interdependence making using one and not the other impossible. It will be beneficial to conduct an analysis and implement design patterns to solve the concern.
+\end{itemize}

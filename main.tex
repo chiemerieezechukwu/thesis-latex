@@ -23,9 +23,9 @@
   showstringspaces=false,
   columns=flexible,
   basicstyle=\ttfamily\footnotesize,
-  morekeywords={None,assert,List},
+  morekeywords={None,assert,List,with,TypeError,KeyError,AssertionError,True,AttributeError},
   keywordstyle=\color{blue},
-  emph={__init__,method,property,static,@staticmethod,@classmethod},
+  emph={__init__,method,property,static,@staticmethod,@classmethod,@property},
   emphstyle=\color{dkyellow},
   commentstyle=\color{dkgreen},
   stringstyle=\color{dkgreen},
@@ -100,17 +100,23 @@
   \setlength{\parskip}{\baselineskip}
 
   \chapter{Introduction}
-  \input{chapters/introduction.tex}
+  \input{chapters/introduction}
 
   \chapter{Implementation}
-  \input{chapters/implementation.tex}
+  \input{chapters/implementation}
 
   \chapter{Testing}
-  \input{chapters/testing.tex}
+  \input{chapters/testing}
 
   \chapter{Conclusion}
-  \input{chapters/conclusion.tex}
+  \input{chapters/conclusion}
 
+  \appendix
+  \chapter{Source code}\label{appendix:sourcecode}
+  \input{chapters/appendix_sourcecode}
+
+  \chapter{Unit test code}\label{appendix:unittest}
+  \input{chapters/appendix_testing.tex}
 
   \bibliographystyle{unsrt}
   \renewcommand{\bibname}{References}

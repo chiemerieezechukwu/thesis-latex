@@ -1,0 +1,82 @@
+\section{What is Testing}
+In general, testing is finding out how well something works. Software testing is the act of examining the artifacts and the behavior of the software under test by validation and verification \cite{wikipedia-testing}.
+
+There are several types of tests that can be carried out on a software but for the sake of this thesis project, all emphasis will be on unit test.
+
+\section{What is unit testing}
+Unit testing is a type of software testing where individual units or components of a software are tested. The goal is to ensure that each unit of software code works as intended. Unit test is carried out by developers throughout the development (coding) phase of an application. Unit tests are used to isolate a part of code and ensure that it is correct. Any singular function, method, process, module, or object might be considered a unit.
+
+Unit testing ensures that all code meets quality standards before it’s deployed. This ensures a reliable engineering environment where quality is paramount. Over the course of the product development life cycle, unit testing saves time and money, and helps developers write better code, more efficiently. It offers a wide variety of advantages but a few has been listed below:
+
+\begin{itemize}
+  \item \textbf{Bugs are found easily and quicker:} Code that is covered by tests is more dependable than code that is not. If a future modification breaks something in the code, developers will be able to quickly pinpoint the source of the problem rather than having to sift through a large codebase.
+  \item \textbf{Unit testing provides documentation:} Unit tests are a type of living product documentation. Developers can use unit tests to acquire a basic overview of the logic of a module and the system as a whole in order to figure out what functionality is offered by one module vs another. Unit test cases are indications that provide information about whether a software component is being used correctly or incorrectly. As a result, these examples serve as excellent documentation for these indicators.
+  \item \textbf{Modularity:} Thanks to the modular nature of the unit testing, parts of a project can be tested without waiting for others to be completed.
+\end{itemize}
+
+
+\section{Testing the library}
+Each module and each function down to each line of code was tested yielding a 100\% test coverage. Pytest, a popular Python testing library, was used to accomplish the test. A sample test case is included.
+
+\begin{lstlisting}
+  from project import Project
+  from unittest.mock import Mock
+  from project.governance import ProjectGovernance
+
+
+  def test_Project(project: Project):
+      assert str(project) == "Fake Project"
+      assert isinstance(project.project_charter, Mock)
+      assert hasattr(project.project_charter, "project_stakeholders")
+      assert hasattr(project.project_charter, "project_title")
+      assert isinstance(project.project_governance, ProjectGovernance)
+      assert project.deliverables == []
+      assert project.project_risks == []
+\end{lstlisting}
+
+The test cases are enforced through a series of \verb+assert+ statements
+
+These tests were configured to run automatically on GitHub using Github Actions whenever there's a new push to the repository. The configuration is in a \verb+.yaml+ file format.
+
+\pagebreak
+
+\begin{lstlisting}
+  name: Test
+
+  on:
+    push:
+    pull_request:
+      branches:
+        - master
+
+  jobs:
+    test:
+      runs-on: ubuntu-latest
+
+      steps:
+        - name: Check Out
+          uses: actions/checkout@v2
+
+        - name: Get Branch Name
+          run: echo "BRANCH=$(echo ${GITHUB_REF##*/})" >> $GITHUB_ENV
+
+        - name: Install requirements, run tests with make and write coverage
+          run: make testall
+
+        - name: Get Coverage for badge
+          run: echo "COVERAGE=$(cat coverage.json | jq .totals.percent_covered)%" >> $GITHUB_ENV
+
+        - name: Create Badge
+          uses: schneegans/dynamic-badges-action@v1.1.0
+          with:
+            auth: ${{ secrets.GIST_SECRET }}
+            gistID: a1817190b63b0cd8f551cb3ec2ab6524
+            filename: ${{ github.event.repository.name }}_${{ env.BRANCH }}_coverage.json
+            label: Code Coverage
+            message: ${{ env.COVERAGE }}
+            color: green
+            namedLogo: GitHub Actions
+
+\end{lstlisting}
+
+The source code and tests in their entirety are in the \autoref{appendix:sourcecode} and \autoref{appendix:unittest} section respectively
